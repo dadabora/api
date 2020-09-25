@@ -162,24 +162,26 @@ hh = db.hh
 # заполнение базы обновленными данными
 def filter(vacancy_list_sj, vacancy_list_hh):
     for v in vacancy_list_sj:
-        sj.update({'link': v['link']},
+        sj.update_one({'link': v['link']},
                   {'$set': {'name': v['name'],
                             'link': v['link'],
                             'min': v['min'],
                             'max': v['max'],
-                            'currency': v['currency']}},True)
+                            'currency': v['currency']}},upsert=True)
     for v in vacancy_list_hh:
-        hh.update({'link': v['link']},
+        hh.update_one({'link': v['link']},
                   {'$set': {'name': v['name'],
                             'link': v['link'],
                             'min': v['min'],
                             'max': v['max'],
-                            'currency': v['currency']}}, True)
+                            'currency': v['currency']}}, upsert=True)
 
 # сортировка по минимальному значению
 def vacancy_min(min_salary):
+    print('Коллекция superjob')
     for corrent in sj.find({'$or': [{'min': {'$gt': min_salary}},{'max':{'$gt':min_salary}}]}):
         pprint(corrent)
+    print('Коллекция hh')
     for corrent in hh.find({'$or': [{'min': {'$gt': min_salary}},{'max': {'$gt': min_salary}}]}):
         pprint(corrent)
 
